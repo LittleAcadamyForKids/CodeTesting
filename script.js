@@ -504,7 +504,7 @@
 
       const headerHeight = header.offsetHeight;
       const footerHeight = footer.offsetHeight;
-      const mainPadding = parseInt(window.getComputedStyle(main).paddingTop);
+      const mainPadding = Number.parseInt(window.getComputedStyle(main).paddingTop);
 
       overlay.style.top = `${headerHeight + mainPadding}px`;
       overlay.style.bottom = `${footerHeight + mainPadding}px`;
