@@ -1,6 +1,15 @@
 (function() {
     'use strict';
 
+    // Modern JavaScript utilities (ES2015+ standards)
+    const NumberUtils = {
+        parseInt: Number.parseInt,
+        parseFloat: Number.parseFloat,
+        isNaN: Number.isNaN,
+        isFinite: Number.isFinite,
+        isInteger: Number.isInteger
+    };
+
     // Configuration
     const ARABIC_LETTERS = ['أ','ب','ت','ث','ج','ح','خ','د','ذ','ر','ز','س','ش','ص','ض','ط','ظ','ع','غ','ف','ق','ك','ل','م','ن','ه','و','ي'];
     const LETTERS_COUNT = 4; // Same as images app
@@ -23,15 +32,15 @@
 
     // Prevent default touch behaviors that cause scrolling
     document.addEventListener('touchmove', function(e) {
-      if (e.touches.length > 1 || e.target.tagName === 'BUTTON') {
-        e.preventDefault();
-      }
+        if (e.touches.length > 1 || e.target.tagName === 'BUTTON') {
+            e.preventDefault();
+        }
     }, { passive: false });
 
     document.addEventListener('touchstart', function(e) {
-      if (e.touches.length > 1) {
-        e.preventDefault();
-      }
+        if (e.touches.length > 1) {
+            e.preventDefault();
+        }
     }, { passive: false });
 
     // Utility functions
@@ -42,7 +51,7 @@
     function pickRandomLetters(n) {
         const copy = ARABIC_LETTERS.slice();
         const out = [];
-        for(let i = 0; i < n; i++) {
+        for (let i = 0; i < n; i++) {
             const idx = randInt(copy.length);
             out.push(copy.splice(idx, 1)[0]);
         }
@@ -67,7 +76,7 @@
 
         // Create matching letters (shuffled version of left letters)
         rightLetters = [...leftLetters];
-        for(let i = rightLetters.length - 1; i > 0; i--) {
+        for (let i = rightLetters.length - 1; i > 0; i--) {
             const j = randInt(i + 1);
             [rightLetters[i], rightLetters[j]] = [rightLetters[j], rightLetters[i]];
         }
@@ -137,15 +146,15 @@
 
     // Event handlers
     function onLeftPointerDown(e) {
-        if(!allowStart || deleteMode) return;
+        if (!allowStart || deleteMode) return;
 
         e.preventDefault();
         const el = e.currentTarget;
-        const idx = Number(el.dataset.index);
+        const idx = NumberUtils.parseInt(el.dataset.index, 10);
 
         clearTempStyles();
         el.classList.add('start');
-        activeStart = {index: idx, el: el, side: 'left'};
+        activeStart = { index: idx, el, side: 'left' };
 
         // Create temporary line
         tempPath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
@@ -166,7 +175,7 @@
     }
 
     function onPointerMove(e) {
-        if(!activeStart || !tempPath) return;
+        if (!activeStart || !tempPath) return;
 
         const startEl = activeStart.el;
         const p1 = getCenterRelativeTo(svgLayer, startEl);
@@ -178,7 +187,7 @@
     }
 
     function onTouchMove(e) {
-        if(!activeStart || !tempPath || e.touches.length !== 1) return;
+        if (!activeStart || !tempPath || e.touches.length !== 1) return;
 
         const touch = e.touches[0];
         const startEl = activeStart.el;
@@ -211,18 +220,18 @@
         const elAt = document.elementFromPoint(clientX, clientY);
         let target = elAt;
 
-        while(target && target !== document.body) {
-            if(target.classList && target.classList.contains('cell') && target !== activeStart.el) break;
+        while (target && target !== document.body) {
+            if (target.classList && target.classList.contains('cell') && target !== activeStart.el) break;
             target = target.parentElement;
         }
 
-        if(activeStart && target && target.classList && target.classList.contains('cell')) {
+        if (activeStart && target && target.classList && target.classList.contains('cell')) {
             const targetSide = target.dataset.side;
             const startSide = activeStart.side;
 
             // Only allow connections between opposite columns
-            if(targetSide !== startSide) {
-                const ri = Number(target.dataset.index);
+            if (targetSide !== startSide) {
+                const ri = NumberUtils.parseInt(target.dataset.index, 10);
                 addConnection(activeStart.index, ri);
             }
         }
@@ -234,9 +243,9 @@
     function onRightPointerUp(e) {
         e.preventDefault();
         const el = e.currentTarget;
-        const idx = Number(el.dataset.index);
+        const idx = NumberUtils.parseInt(el.dataset.index, 10);
 
-        if(!activeStart) return;
+        if (!activeStart) return;
 
         addConnection(activeStart.index, idx);
         cleanupTemp();
@@ -245,9 +254,9 @@
     function onRightClick(e) {
         e.preventDefault();
         const el = e.currentTarget;
-        const idx = Number(el.dataset.index);
+        const idx = NumberUtils.parseInt(el.dataset.index, 10);
 
-        if(!activeStart) return;
+        if (!activeStart) return;
 
         addConnection(activeStart.index, idx);
         cleanupTemp();
@@ -257,20 +266,20 @@
     function addConnection(leftIndex, rightIndex) {
         // Remove existing connections for same left or right
         const existingLeft = connections.find(c => c.leftIndex === leftIndex);
-        if(existingLeft) removeConnection(existingLeft);
+        if (existingLeft) removeConnection(existingLeft);
 
         const existingRight = connections.find(c => c.rightIndex === rightIndex);
-        if(existingRight) removeConnection(existingRight);
+        if (existingRight) removeConnection(existingRight);
 
         // Get elements
         const leftEl = leftGrid.querySelector(`[data-index='${leftIndex}']`);
         const rightEl = rightGrid.querySelector(`[data-index='${rightIndex}']`);
 
-        if(!leftEl || !rightEl) return;
+        if (!leftEl || !rightEl) return;
 
         // Create line (always blue)
         const line = createSvgLineBetween(leftEl, rightEl);
-        connections.push({leftIndex, rightIndex, line});
+        connections.push({ leftIndex, rightIndex, line });
 
         // Mark as disabled
         leftEl.classList.add('disabled');
@@ -280,13 +289,15 @@
     function removeConnection(conn) {
         try {
             svgLayer.removeChild(conn.line);
-        } catch(e) {}
+        } catch (e) {
+            // Silent fail if element already removed
+        }
 
         const leftEl = leftGrid.querySelector(`[data-index='${conn.leftIndex}']`);
         const rightEl = rightGrid.querySelector(`[data-index='${conn.rightIndex}']`);
 
-        if(leftEl) leftEl.classList.remove('disabled');
-        if(rightEl) rightEl.classList.remove('disabled');
+        if (leftEl) leftEl.classList.remove('disabled');
+        if (rightEl) rightEl.classList.remove('disabled');
 
         connections = connections.filter(c => c !== conn);
     }
@@ -311,10 +322,10 @@
         // Click to delete when in delete mode
         path.addEventListener('click', function(ev) {
             ev.stopPropagation();
-            if(!deleteMode) return;
+            if (!deleteMode) return;
 
             const conn = connections.find(c => c.line === path);
-            if(conn) removeConnection(conn);
+            if (conn) removeConnection(conn);
         });
 
         return path;
@@ -330,9 +341,18 @@
     function getCenterRelativeTo(svgEl, node) {
         const svgRect = svgEl.getBoundingClientRect();
         const rect = node.getBoundingClientRect();
+
+        // Using Number to ensure numeric operations
+        const left = Number(rect.left);
+        const top = Number(rect.top);
+        const width = Number(rect.width);
+        const height = Number(rect.height);
+        const svgLeft = Number(svgRect.left);
+        const svgTop = Number(svgRect.top);
+
         return {
-            x: rect.left + rect.width/2 - svgRect.left,
-            y: rect.top + rect.height/2 - svgRect.top
+            x: left + width / 2 - svgLeft,
+            y: top + height / 2 - svgTop
         };
     }
 
@@ -340,7 +360,7 @@
         connections.forEach(c => {
             const leftEl = leftGrid.querySelector(`[data-index='${c.leftIndex}']`);
             const rightEl = rightGrid.querySelector(`[data-index='${c.rightIndex}']`);
-            if(!leftEl || !rightEl) return;
+            if (!leftEl || !rightEl) return;
 
             const ptL = getCenterRelativeTo(svgLayer, leftEl);
             const ptR = getCenterRelativeTo(svgLayer, rightEl);
@@ -350,7 +370,7 @@
 
     function clearAll() {
         // Exit delete mode
-        if(deleteMode) {
+        if (deleteMode) {
             exitDeleteMode();
         }
 
@@ -358,7 +378,9 @@
         connections.forEach(c => {
             try {
                 svgLayer.removeChild(c.line);
-            } catch(e) {}
+            } catch (e) {
+                // Silent fail if element already removed
+            }
         });
         connections = [];
 
@@ -375,10 +397,12 @@
     }
 
     function cleanupTemp() {
-        if(tempPath) {
+        if (tempPath) {
             try {
                 svgLayer.removeChild(tempPath);
-            } catch(e) {}
+            } catch (e) {
+                // Silent fail if element already removed
+            }
             tempPath = null;
         }
 
@@ -399,13 +423,13 @@
         revealed = !revealed;
         const btn = document.getElementById('revealBtn');
 
-        if(revealed) {
+        if (revealed) {
             clearAll();
 
             // Show all correct connections
             leftLetters.forEach((letter, li) => {
                 const ri = rightLetters.findIndex(it => it === letter);
-                if(ri >= 0) {
+                if (ri >= 0) {
                     addConnection(li, ri);
                 }
             });
@@ -466,7 +490,7 @@
 
     deleteBtn.addEventListener('click', (e) => {
         e.preventDefault();
-        if(deleteMode) {
+        if (deleteMode) {
             exitDeleteMode();
         } else {
             enterDeleteMode();
@@ -497,19 +521,19 @@
 
     // Adjust overlay for current screen size
     function adjustOverlayPosition() {
-      const overlay = document.querySelector('.overlay');
-      const header = document.querySelector('.header');
-      const footer = document.querySelector('.footer');
-      const main = document.querySelector('.main');
+        const overlay = document.querySelector('.overlay');
+        const header = document.querySelector('.header');
+        const footer = document.querySelector('.footer');
+        const main = document.querySelector('.main');
 
-      const headerHeight = header.offsetHeight;
-      const footerHeight = footer.offsetHeight;
-      const mainPadding = parseInt(window.getComputedStyle(main).paddingTop);
+        const headerHeight = header.offsetHeight;
+        const footerHeight = footer.offsetHeight;
+        const mainPadding = NumberUtils.parseInt(window.getComputedStyle(main).paddingTop, 10);
 
-      overlay.style.top = `${headerHeight + mainPadding}px`;
-      overlay.style.bottom = `${footerHeight + mainPadding}px`;
-      overlay.style.left = `${mainPadding}px`;
-      overlay.style.right = `${mainPadding}px`;
+        overlay.style.top = `${headerHeight + mainPadding}px`;
+        overlay.style.bottom = `${footerHeight + mainPadding}px`;
+        overlay.style.left = `${mainPadding}px`;
+        overlay.style.right = `${mainPadding}px`;
     }
 
     // Initial game
@@ -531,4 +555,4 @@
 
     // Show instructions on first load
     setTimeout(showInstructions, 500);
-  })();
+})();
