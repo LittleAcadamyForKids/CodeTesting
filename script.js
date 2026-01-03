@@ -286,21 +286,20 @@
         rightEl.classList.add('disabled');
     }
 
-    function removeConnection(conn) {
-        try {
-            svgLayer.removeChild(conn.line);
-        } catch (e) {
-            // Silent fail if element already removed
-        }
-
-        const leftEl = leftGrid.querySelector(`[data-index='${conn.leftIndex}']`);
-        const rightEl = rightGrid.querySelector(`[data-index='${conn.rightIndex}']`);
-
-        if (leftEl) leftEl.classList.remove('disabled');
-        if (rightEl) rightEl.classList.remove('disabled');
-
-        connections = connections.filter(c => c !== conn);
+function removeConnection(conn) {
+    // Check if the line element still exists before trying to remove it
+    if (conn.line && conn.line.parentNode === svgLayer) {
+        svgLayer.removeChild(conn.line);
     }
+
+    const leftEl = leftGrid.querySelector(`[data-index='${conn.leftIndex}']`);
+    const rightEl = rightGrid.querySelector(`[data-index='${conn.rightIndex}']`);
+
+    if (leftEl) leftEl.classList.remove('disabled');
+    if (rightEl) rightEl.classList.remove('disabled');
+
+    connections = connections.filter(c => c !== conn);
+}
 
     function createSvgLineBetween(leftEl, rightEl) {
         const ptL = getCenterRelativeTo(svgLayer, leftEl);
@@ -396,15 +395,11 @@
         document.getElementById('revealBtn').textContent = 'إظهار';
     }
 
-    function cleanupTemp() {
-        if (tempPath) {
-            try {
-                svgLayer.removeChild(tempPath);
-            } catch (e) {
-                // Silent fail if element already removed
-            }
-            tempPath = null;
+     function cleanupTemp() {
+        if (tempPath && svgLayer.contains(tempPath)) {
+            svgLayer.removeChild(tempPath);
         }
+        tempPath = null;
 
         clearTempStyles();
         window.removeEventListener('pointermove', onPointerMove);
