@@ -216,7 +216,7 @@
             target = target.parentElement;
         }
 
-        if(activeStart && target && target.classList && target.classList.contains('cell')) {
+        if(activeStart && target?.classList?.contains('cell')) {
             const targetSide = target.dataset.side;
             const startSide = activeStart.side;
 
@@ -404,7 +404,7 @@
 
             // Show all correct connections
             leftLetters.forEach((letter, li) => {
-                const ri = rightLetters.findIndex(it => it === letter);
+                const ri = rightLetters.indexOf(letter);
                 if(ri >= 0) {
                     addConnection(li, ri);
                 }
