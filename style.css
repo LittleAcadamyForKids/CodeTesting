@@ -1,0 +1,628 @@
+/* style.css - Updated for Letters Matching Letters */
+
+/* Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+    outline: none;
+  }
+
+  /* FIX FOR IPAD/iOS SCROLLING */
+  html, body {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    position: fixed; /* Critical for iOS "no-scroll" */
+    inset: 0;
+    font-family: 'Comic Sans MS', 'Segoe UI', Tahoma, Arial, sans-serif;
+    /* Background Gradient */
+    background: linear-gradient(135deg, #ffafbd, #ffc3a0);
+  }
+
+  /* Main App Container */
+  .app {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    background: rgba(255, 255, 255, 0.95);
+    overflow: hidden;
+
+    /* Centering logic for large screens */
+    max-width: 1000px;
+    margin: 0 auto;
+    box-shadow: 0 0 50px rgba(0,0,0,0.1);
+  }
+
+  /* Header - Fixed height container */
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 15px;
+    background: #2c3e50;
+    color: white;
+    flex: 0 0 auto;
+    height: 55px;
+    min-height: 55px;
+    max-height: 55px;
+    gap: 10px;
+    z-index: 10;
+    overflow: hidden; /* Prevent overflow */
+  }
+
+  /* Logo and title container - Centered */
+  .title-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    flex-grow: 1;
+    height: 100%; /* Match header height */
+    max-height: 100%;
+  }
+
+  .title {
+    font-weight: bold;
+    font-size: clamp(14px, 4vw, 20px);
+    text-align: center;
+    white-space: nowrap;
+    line-height: 1;
+  }
+
+  /* Logo container - Strict size constraints */
+  .logo-container {
+    height: 40px;
+    width: 40px;
+    min-height: 40px;
+    min-width: 40px;
+    max-height: 40px;
+    max-width: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    overflow: hidden;
+    background: #4ecdc4; /* Fallback color */
+    border-radius: 8px;
+  }
+
+  .logo {
+    height: 100%;
+    width: 100%;
+    max-height: 100%;
+    max-width: 100%;
+    object-fit: contain;
+    display: block;
+  }
+
+  .controls-left, .controls-right {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    height: 100%; /* Match header height */
+  }
+
+  /* Buttons */
+  button {
+    padding: 6px 12px;
+    border: none;
+    border-radius: 20px;
+    background: #4ecdc4; /* Teal color */
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+    font-size: 13px;
+    transition: transform 0.2s;
+    white-space: nowrap;
+    height: 34px; /* Fixed height */
+    line-height: 1;
+  }
+
+  button:active {
+    transform: scale(0.95);
+  }
+
+  button.secondary {
+    background: #7f8c8d;
+  }
+
+  button.ghost {
+    background: transparent;
+    color: #4ecdc4;
+    border: 1px solid #4ecdc4;
+  }
+
+  button.small {
+    padding: 4px 8px;
+    font-size: 12px;
+    height: 28px; /* Smaller fixed height */
+  }
+
+  button.warning {
+    background: #ff9f43;
+  }
+
+  /* Main Area - The core logic for "No Scroll" */
+  .main {
+    flex: 1; /* Take remaining space */
+    display: flex;
+    gap: 15px;
+    padding: 15px;
+    overflow: hidden;
+    min-height: 0;
+    position: relative;
+  }
+
+  /* Left and Right Panels */
+  .panel {
+    flex: 1;
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    min-height: 0;
+  }
+
+  .panel-title {
+    padding: 8px;
+    background: #f8f9fa;
+    border-bottom: 2px solid #eee;
+    font-weight: bold;
+    text-align: center;
+    font-size: 16px;
+    color: #ff6b6b;
+    flex: 0 0 auto;
+    line-height: 1.2;
+  }
+
+  /* The Grid Container */
+  .grid {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 2vh;
+    padding: 10px;
+    overflow: hidden;
+    min-height: 0;
+    justify-content: center;
+  }
+
+  /* Individual Cells */
+  .cell {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: white;
+    border: 2px solid #dfe6e9;
+    border-radius: 12px;
+    cursor: pointer;
+    user-select: none;
+    position: relative;
+    min-height: 0;
+    max-height: 100%;
+  }
+
+  .cell:hover {
+    border-color: #4ecdc4;
+    background: #f0fdfc;
+  }
+
+  .cell.start {
+    border-color: #3498db;
+    background: #e3f2fd;
+  }
+
+  .cell.disabled {
+    opacity: 0.5;
+    filter: grayscale(0.5);
+    cursor: default;
+  }
+
+  /* Content inside cells */
+  .letter {
+    font-size: clamp(24px, 8vh, 50px);
+    font-weight: bold;
+    color: #2c3e50;
+    line-height: 1;
+  }
+
+  /* SVG Overlay */
+  .overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 5;
+  }
+
+  .overlay svg {
+    width: 100%;
+    height: 100%;
+  }
+
+  /* Footer */
+  .footer {
+    padding: 5px;
+    text-align: center;
+    background: #f1f2f6;
+    border-top: 1px solid #ddd;
+    font-size: 12px;
+    color: #7f8c8d;
+    flex: 0 0 auto;
+    height: 35px;
+    min-height: 35px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1.2;
+  }
+
+  .mobile-only { display: none; }
+
+  /* Mode Indicator */
+  .mode-indicator {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 1;
+    height: 28px;
+  }
+
+  .mode-indicator.normal {
+    background: rgba(52, 152, 219, 0.1);
+    color: #3498db;
+  }
+
+  .mode-indicator.delete {
+    background: rgba(231, 76, 60, 0.1);
+    color: #e74c3c;
+  }
+
+  .mode-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+  }
+
+  .mode-dot.normal {
+    background: #3498db;
+  }
+
+  .mode-dot.delete {
+    background: #e74c3c;
+  }
+
+  /* Instructions Modal */
+  .instructions {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: white;
+    padding: 20px;
+    border-radius: 15px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+    z-index: 1000;
+    max-width: 400px;
+    width: 90%;
+    display: none;
+  }
+
+  .instructions h3 {
+    margin-top: 0;
+    color: #2c3e50;
+    margin-bottom: 15px;
+    line-height: 1.3;
+  }
+
+  .instructions ul {
+    padding-right: 20px;
+    margin-bottom: 20px;
+  }
+
+  .instructions li {
+    margin-bottom: 8px;
+    line-height: 1.4;
+  }
+
+  .overlay-bg {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.5);
+    z-index: 999;
+    display: none;
+  }
+
+  /* =========================================
+     RESPONSIVE TWEAKS - MOBILE FIRST APPROACH
+     ========================================= */
+
+  /* Large screens (Desktop) - Default styles above */
+
+  /* Tablets and Small Laptops */
+  @media (max-width: 992px) {
+    .app {
+      max-width: 100%;
+      border-radius: 0;
+    }
+
+    .header {
+      padding: 6px 12px;
+    }
+
+    .main {
+      padding: 12px;
+      gap: 12px;
+    }
+  }
+
+  /* Tablets/iPads (Portrait) */
+  @media (max-width: 768px) {
+    .header {
+      padding: 5px 10px;
+      height: 50px;
+      min-height: 50px;
+      max-height: 50px;
+      gap: 8px;
+    }
+
+    .logo-container {
+      height: 35px;
+      width: 35px;
+      min-height: 35px;
+      min-width: 35px;
+      max-height: 35px;
+      max-width: 35px;
+    }
+
+    .title {
+      font-size: 16px;
+    }
+
+    .main {
+      padding: 10px;
+      gap: 8px;
+    }
+
+    .controls-right .mode-indicator {
+      display: none;
+    }
+
+    button {
+      padding: 5px 10px;
+      font-size: 12px;
+      height: 32px;
+    }
+
+    button.small {
+      padding: 3px 6px;
+      font-size: 11px;
+      height: 26px;
+    }
+  }
+
+  /* Mobile Phones (Portrait) */
+  @media (max-width: 576px) {
+    .header {
+      flex-wrap: wrap;
+      height: auto;
+      min-height: 90px; /* Allow for 2 rows */
+      max-height: none;
+      padding: 8px 5px;
+      gap: 5px;
+    }
+
+    .title-container {
+      order: 1;
+      width: 100%;
+      height: 40px;
+      min-height: 40px;
+      justify-content: center;
+      margin: 2px 0;
+    }
+
+    .controls-left {
+      order: 2;
+      width: 100%;
+      height: 40px;
+      min-height: 40px;
+      justify-content: space-between;
+      gap: 5px;
+    }
+
+    .controls-right {
+      display: none;
+    }
+
+    .logo-container {
+      height: 30px;
+      width: 30px;
+      min-height: 30px;
+      min-width: 30px;
+      max-height: 30px;
+      max-width: 30px;
+    }
+
+    .title {
+      font-size: 14px;
+    }
+
+    .main {
+      padding: 5px;
+      gap: 5px;
+    }
+
+    .grid {
+      gap: 1vh;
+      padding: 5px;
+    }
+
+    .mobile-only {
+      display: inline;
+    }
+
+    button {
+      padding: 4px 8px;
+      font-size: 11px;
+      height: 30px;
+      flex: 1;
+      max-width: 19%;
+    }
+
+    button.small {
+      padding: 2px 4px;
+      font-size: 10px;
+      height: 24px;
+    }
+  }
+
+  /* Very Small Phones */
+  @media (max-width: 380px) {
+    .header {
+      min-height: 100px;
+    }
+
+    .title-container {
+      height: 35px;
+      min-height: 35px;
+    }
+
+    .controls-left {
+      height: 45px;
+      min-height: 45px;
+    }
+
+    .logo-container {
+      height: 25px;
+      width: 25px;
+      min-height: 25px;
+      min-width: 25px;
+      max-height: 25px;
+      max-width: 25px;
+    }
+
+    .title {
+      font-size: 13px;
+    }
+
+    button {
+      font-size: 10px;
+      padding: 3px 6px;
+      height: 28px;
+    }
+
+    button.small {
+      font-size: 9px;
+      padding: 1px 3px;
+      height: 22px;
+    }
+  }
+
+  /* LANDSCAPE MODE & SHORT SCREENS */
+  @media (max-height: 600px) {
+    .header {
+      height: 40px;
+      min-height: 40px;
+      max-height: 40px;
+      padding: 0 10px;
+    }
+
+    .app {
+      padding: 0;
+    }
+
+    .logo-container {
+      height: 25px;
+      width: 25px;
+      min-height: 25px;
+      min-width: 25px;
+      max-height: 25px;
+      max-width: 25px;
+    }
+
+    .title {
+      font-size: 12px;
+    }
+
+    button {
+      padding: 2px 8px;
+      font-size: 11px;
+      height: 28px;
+    }
+
+    button.small {
+      padding: 1px 4px;
+      font-size: 10px;
+      height: 24px;
+    }
+
+    .panel-title {
+      padding: 4px;
+      font-size: 13px;
+    }
+
+    .grid {
+      gap: 4px;
+      padding: 4px;
+    }
+
+    .footer {
+      display: none;
+    }
+
+    .letter {
+      font-size: clamp(20px, 6vh, 40px);
+    }
+  }
+
+  /* Ultra Short Screens */
+  @media (max-height: 400px) {
+    .header {
+      height: 35px;
+      min-height: 35px;
+      max-height: 35px;
+      padding: 0 8px;
+    }
+
+    .logo-container {
+      height: 20px;
+      width: 20px;
+      min-height: 20px;
+      min-width: 20px;
+      max-height: 20px;
+      max-width: 20px;
+    }
+
+    .title {
+      font-size: 11px;
+    }
+
+    button {
+      padding: 1px 6px;
+      font-size: 10px;
+      height: 24px;
+    }
+
+    button.small {
+      padding: 0 3px;
+      font-size: 9px;
+      height: 20px;
+    }
+
+    .panel-title {
+      padding: 2px;
+      font-size: 11px;
+    }
+  }

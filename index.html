@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>لعبة مطابقة الحروف</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* Prevent any default scrolling */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-overflow-scrolling: touch;
+        }
+        html, body {
+            height: 100%;
+            width: 100%;
+            overflow: hidden;
+            position: fixed;
+        }
+    </style>
+</head>
+<body>
+    <div class="app">
+        <!-- Header with controls -->
+<!-- Update the header section -->
+    <div class="header">
+        <div class="controls-left">
+            <button id="newBtn">جديد</button>
+            <button id="clearBtn" class="secondary">مسح</button>
+            <button id="revealBtn" class="ghost">إظهار</button>
+            <button id="deleteBtn" class="small warning">حذف خط</button>
+            <button id="helpBtn" class="small ghost">مساعدة</button>
+        </div>
+
+        <div class="title-container">
+            <div class="logo-container">
+                <img src="logo.jpeg" alt="شعار اللعبة" class="logo">
+            </div>
+            <div class="title">لعبة مطابقة الحروف</div>
+        </div>
+
+        <div class="controls-right">
+            <div id="modeIndicator" class="mode-indicator normal">
+                <div class="mode-dot normal"></div>
+                <span>وضع الربط</span>
+            </div>
+        </div>
+    </div>
+
+        <!-- Main game area - 2 columns side by side -->
+        <div class="main">
+            <!-- Left column - Letters -->
+            <div class="panel left-panel">
+                <div class="panel-title">الحروف الأساسية</div>
+                <div id="leftGrid" class="grid"></div>
+            </div>
+
+            <!-- Right column - Matching Letters -->
+            <div class="panel right-panel">
+                <div class="panel-title">الحروف المتطابقة</div>
+                <div id="rightGrid" class="grid"></div>
+            </div>
+
+            <!-- SVG overlay for lines -->
+            <div class="overlay">
+                <svg id="svgLayer"></svg>
+            </div>
+        </div>
+
+        <!-- Footer instructions -->
+        <div class="footer">
+            اسحب من حرف إلى حرف مطابق
+            <span class="mobile-only">(المس الحرف ثم الحرف المطابق)</span>
+        </div>
+    </div>
+
+    <!-- Instructions modal -->
+    <div class="overlay-bg" id="overlayBg"></div>
+    <div class="instructions" id="instructions">
+        <h3>كيفية اللعب</h3>
+        <ul>
+            <li>اسحب من أي حرف في العمود الأيسر إلى نظيره في العمود الأيمن</li>
+            <li>جميع الخطوط باللون الأزرق</li>
+            <li>اضغط على "حذف خط" ثم اضغط على أي خط لحذفه</li>
+            <li>اضغط على "جديد" لتوليد مجموعة جديدة من الحروف</li>
+            <li>اضغط على "مسح" لإزالة جميع التوصيلات</li>
+            <li>اضغط على "إظهار" لرؤية جميع التوصيلات الصحيحة</li>
+        </ul>
+        <button id="closeInstructions">فهمت، ابدأ اللعب!</button>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
